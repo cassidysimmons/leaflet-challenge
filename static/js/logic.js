@@ -23,8 +23,8 @@ d3.json(url).then(function(data){
 
 // create the map
 let myMap = L.map('map',{
-    center: [-149.1283,60.8168],
-    zoom: 2,
+    center: [39, -98.5795],
+    zoom: 5,
 });
 
 // adding the tile layer
@@ -40,25 +40,25 @@ d3.json(url).then(function(data){
 for (let i=0; i < data.features.length; i++){
 
     // initialize variables to use later
-    let coords = [data.features[i].geometry.coordinates[1], data.features[i].gemometry.coordinates[0]];
-    let depth = data.features[i].properties.geometry.coordinates[2];
+    let coords = [data.features[i].geometry.coordinates[1], data.features[i].geometry.coordinates[0]];
+    let depth = data.features[i].geometry.coordinates[2];
     let mag = data.features[i].properties.mag;
 
     // use a conditional to determine color based on 'depth'
     let color = '';
-        if (depth < -10 && depth > 10) color == 'green';
-        else if (depth < 10 && depth > 30) color == 'yellow';
-        else if (depth < 30 && depth > 50) color == 'orange';
-        else if (depth < 50 && depth > 70) color == 'red';
-        else if (depth < 70 && depth > 90) color == 'purple';
-        else if (depth > 90) color == 'black';
+        if (depth > -10 && depth < 10){color = 'green';}
+        else if (depth >= 10 && depth < 30){color = 'yellow';}
+        else if (depth >= 30 && depth < 50){color = 'orange';}
+        else if (depth >= 50 && depth < 70){color = 'red';}
+        else if (depth >= 70 && depth < 90){color = 'purple';}
+        else if (depth > 90){color = 'black';}
 
     // create the circles for each earthquake report and add popups
     L.circle(coords,{
-        fillOpacity: 0.75,
-        color: 'white',
+        fillOpacity: 0.9,
+        color: '',
         fillColor: color,
-        radius: Math.sqrt(mag) * 500
+        radius: 10000 * mag
         }).bindPopup(`<h3>${data.features.place}</h3>`).addTo(myMap);
 
 };
