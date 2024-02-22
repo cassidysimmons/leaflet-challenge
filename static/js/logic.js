@@ -23,7 +23,7 @@ d3.json(url).then(function(data){
 
 // create the map
 let myMap = L.map('map',{
-    center: [39, -98.5795],
+    center: [36.3397,-114.894117],
     zoom: 5,
 });
 
@@ -59,16 +59,39 @@ for (let i=0; i < data.features.length; i++){
         color: '',
         fillColor: color,
         radius: 10000 * mag
-        }).bindPopup(`<h3>${data.features.place}</h3>`).addTo(myMap);
+        }).bindPopup(`<h2>location: ${data.features[i].properties.place}</h2> <hr> <h3>magnitude: ${mag}</h3> <hr> <h3>depth: ${depth}</h3>`).addTo(myMap);
 
 };
 });
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// Set up the legend (reference day 2, activity 4) 
+// Set up the legend (reference day 2, activity 4
+
+let legend = L.control({ position: "bottomright" });
+  legend.onAdd = function() {
+    let div = L.DomUtil.create("div", "info legend");
+    let limits = ['-10-10', '10-30', '30-50', '50-70', '70-90', '90+'];
+    let colors = ['green', 'yellow', 'orange', 'red', 'purple', 'black'];
+    let labels = [];
+
+    let legendInfo = "<h1>Population with Children<br />(ages 6-17)</h1>" +
+      "<div class=\"labels\">" +
+        "<div class=\"min\">" + limits[0] + "</div>" +
+        "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
+      "</div>";
+
+    div.innerHTML = legendInfo;
+
+    limits.forEach(function(limit, index) {
+      labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
+    });
+
+    div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+    return div;
+  };
+
+  // Adding the legend to the map
+  legend.addTo(myMap);
 
 
 
