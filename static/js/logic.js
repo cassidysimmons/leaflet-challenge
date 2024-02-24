@@ -34,6 +34,7 @@ L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+// adding markers + popups
 d3.json(url).then(function(data){
 
 // loop through the dataset
@@ -46,12 +47,12 @@ for (let i=0; i < data.features.length; i++){
 
     // use a conditional to determine color based on 'depth'
     let color = '';
-        if (depth > -10 && depth < 10){color = 'green';}
-        else if (depth >= 10 && depth < 30){color = 'yellow';}
-        else if (depth >= 30 && depth < 50){color = 'orange';}
-        else if (depth >= 50 && depth < 70){color = 'red';}
-        else if (depth >= 70 && depth < 90){color = 'purple';}
-        else if (depth > 90){color = 'black';}
+        if (depth > -10 && depth < 10){color = 'rgb(19, 235, 45)';}
+        else if (depth >= 10 && depth < 30){color = 'rgb(138, 206, 0)';}
+        else if (depth >= 30 && depth < 50){color = 'rgb(186, 174, 0)';}
+        else if (depth >= 50 && depth < 70){color = 'rgb(218, 136, 0)';}
+        else if (depth >= 70 && depth < 90){color = 'rgb(237, 91, 0)';}
+        else if (depth > 90){color = 'rgb(242, 24, 31)';}
 
     // create the circles for each earthquake report and add popups
     L.circle(coords,{
@@ -65,34 +66,28 @@ for (let i=0; i < data.features.length; i++){
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// Set up the legend (reference day 2, activity 4
+// Set up the legend (reference day 2, activity 4 + leaflet documentation)
 
-let legend = L.control({ position: "bottomright" });
+var legend = L.control({position: 'bottomright'});
   legend.onAdd = function() {
-    let div = L.DomUtil.create("div", "info legend");
-    let limits = ['-10-10', '10-30', '30-50', '50-70', '70-90', '90+'];
-    let colors = ['green', 'yellow', 'orange', 'red', 'purple', 'black'];
-    let labels = [];
+    var div = L.DomUtil.create('div', 'info legend')
+    var limits = ['-10-10', '10-30', '30-50', '50-70', '70-90', '90+'];
+    var colors = ['rgb(19, 235, 45)', 'rgb(138, 206, 0)', 'rgb(186, 174, 0)', 'rgb(218, 136, 0)', 'rgb(237, 91, 0)', 'rgb(242, 24, 31)'];
+    var labels = [];
 
-    let legendInfo = "<h1>Population with Children<br />(ages 6-17)</h1>" +
-      "<div class=\"labels\">" +
-        "<div class=\"min\">" + limits[0] + "</div>" +
-        "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
-      "</div>";
+    // Add min & max
+    div.innerHTML = '<h2>earthquake depth</h2>'+'<div class="labels"><div class="min">' + limits[0] + '</div> \
+			<div class="max">' + limits[limits.length - 1] + '</div></div>'
 
-    div.innerHTML = legendInfo;
+    limits.forEach(function (limit, index) {
+      labels.push('<li style="background-color: ' + colors[index] + '"></li>')
+    })
 
-    limits.forEach(function(limit, index) {
-      labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-    });
-
-    div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+    div.innerHTML += '<ul>' + labels.join('') + '</ul>'
     return div;
   };
 
-  // Adding the legend to the map
   legend.addTo(myMap);
-
 
 
 
